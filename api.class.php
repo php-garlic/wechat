@@ -65,13 +65,15 @@
 
 			//回复单文本及单图文消息
 			if (strtolower($postObj->MsgType) == 'text' and trim($postObj->Content) == '图文') {
+
+				//查询数据库（查询多图文）
 				$sql = "SELECT * FROM infolist";
 				$arr = $this->PdoDb($sql);
 
 				$APiModel->reponseMg($postObj, $arr);
 			
 			} else {
-				
+				//查询单文本
 				if ( strtolower( $postObj->MsgType) == "text") {
                     
                     
@@ -80,6 +82,7 @@
 						$sql = "SELECT  keywords,reply FROM info WHERE keywords = '".$Content."'";
 
 						$Content = $this->PdoDb($sql);
+
 
 						if (!empty($Content)) {
 							
@@ -170,14 +173,137 @@
 
 
 		
+		/**
+		 * $url  接口url string
+		 * $type 请求类型 string
+		 * $res 返回数据类型 string
+		 * $arr post请求参数 string
+		 */
+		public function http_curl($url, $type='get', $res = 'json', $arr = '')
+		{	
 
-		//天气api
+			//1.获取xdl2017
+			
+			//1.初始化curl
+			$ch = curl_init();
+			// $url = 'http://www.baidu.com';
+
+			//2.设置curl的参数
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+			if ($type == 'post') {
+				curl_setopt($ch, CURLOPT_POST, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $arr);
+			}
+
+			//3.采集
+			$output = curl_exec($ch);
+			var_dump($output);
+			//4.关闭
+			curl_close($ch);
+			if ($res == 'json') {
+				if ( curl_errno($ch)) {
+					//请求失败
+					return curl_error($ch);
+				} else {
+					//请求成功
+					return json_decode($output, true);
+				}
+				
+			}
+		}
 
 		
 
+		//获取access_token
+		public function Access_ToKen () 
+		{
+			session_start();
+			if ($_SESSION['access_token'] && $_SESSION['expire_time'] > time()) {
+				//如果access_token在session没有过期,则直接返回
+				return $_SESSION['access_token'];
+
+			} else {
+				//如果access_token不存在或者已过期，重新获取access_token
+				$appid = 'wxbb072f64ecf059ba';
+
+				$appsecret = 'd4624c36b6795d1d99dcf0547af5443d';
+
+				$url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$appsecret;
+
+				$res = $this->http_curl($url, 'gte', 'json');
+				var_dump($res);
+				$access_token = $res['access_token'];
+
+				//存入session
+				$_SESSION['access_token'] = $access_token;
+
+				$_SESSION['expire_time']  = time() + 7000;
+				// var_dump($_SESSION['access_token']);
+				return $access_token;
+			}
+		}
 
 
+		public function definedIte() 
+		{
 
-		
+			//创建微信菜单
+			//目前微信接口的调用的方法都是通过 post / get
+			echo $access_token = $this->Access_ToKen();
+			echo '<hr>';
+			//调用接口
+			$url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
+			//定义微信菜单
+			$postArr = array(
+
+				'button'=>array(
+
+						array(
+							'name'=>urlencode('菜单一'),
+							'type'=>'click',
+							'key'=>'item1',
+
+							),
+						array(
+							'name'=>urlencode('菜单二'),
+							'sub_button'=>array(
+
+								array(
+									'name'=>urlencode('歌曲'),
+									'type'=>'click',
+									'key'=>'songs',
+									),
+								array(
+									'name'=>urlencode('电影'),
+									'type'=>'view',
+									'url'=>'http://www.baidu.com',
+									),
+
+								),
+							),
+
+						array(
+
+							'name'=>urlencode('菜单三'),
+							'type'=>'view',
+							'url'=>'http://www.php-garlic.cn',
+
+							),
+					),
+				);
+
+			echo $postJson = urldecode( json_encode( $postArr ) );
+			echo '<hr>';
+			$res = $this->http_curl($url, 'post', 'json', $postJson);
+			var_dump($res);
+			
+		}
 
 	}
+	
+	$mod = new APi;
+
+	$res = $mod->definedIte();
+

@@ -1,5 +1,8 @@
 <?php  
 	
+	
+
+
 	class WeChatAPi
 	{	
 		// protected $pdo;
@@ -14,6 +17,8 @@
 		// 	// echo '<pre>';
 		// 	// var_dump($Content['key']);
 		// }
+		
+		//用户关注事件
 		public function reponseEvent ($postObj) 
 		{
 			$toUser   = $postObj->FromUserName;
@@ -93,7 +98,7 @@
 
 
 
-
+		//查询天气
 		public function weather ($Content)
 		{
 			
@@ -112,15 +117,15 @@
             $err = curl_error($curl);
             $res = json_decode($response, true);
             curl_close($curl);
+
             if ($res['result'] != null) {
 
 	            if ($err) {
 
 	                return false;
+	                
 	            } else {
 
-	                // $res = json_decode($response, true);
-	                //var_dump($res['result']['today']['city']);
 
 	                $Content = '城市：'.$res['result']['today']['city'] ."\n日期：".$res['result']['today']['date_y'].'-'.$res['result']['today']['week'] ."\n今日温度：".$res['result']['today']['temperature'] ."\n今日天气：".$res['result']['today']['weather'] ."\n穿衣指数：".$res['result']['today']['dressing_advice'];
 
