@@ -1,0 +1,258 @@
+<?php  
+	
+
+	class APi
+	{
+
+		//接收事件推送并回复
+		public function reponseMsg() 
+		{
+			//获取到微信推送过来的post数据(xml)
+			
+			// $postArr = $GLOBAlS['HTTP_RAW_POST_DATA'];
+			//获取到微信推送过来的post数据(xml)
+			$postArr = file_get_contents('php://input');
+			
+			//处理消息类型
+			/*<xml>
+			<ToUserName><![CDATA[toUser]]></ToUserName>
+			<FromUserName><![CDATA[FromUser]]></FromUserName>
+			<CreateTime>123456789</CreateTime>
+			<MsgType><![CDATA[event]]></MsgType>
+			<Event><![CDATA[subscribe]]></Event>
+			</xml>*/
+
+			$postObj = simplexml_load_string($postArr);
+			// $postObj->ToUserName = '';
+			// $postObj->FromUserName = '';
+			// $postObj->CreateTime = '';
+			// $postObj->MsgType = 'event';
+			// $postObj->Event = '';
+
+			//判断该数据包是否是订阅的事件推送
+			//转为小写
+			if ( strtolower( $postObj->MsgType) == "event") {
+				// echo 'aaa';
+				//如果是关注事件subscribe
+				if ( strtolower($postObj->Event == "subscribe") ) {
+					//回复用户消息
+					
+					$toUser   = $postObj->FromUserName;
+					$fromUser = $postObj->ToUserName;
+					$time     = time();
+					$MsgType  = "text";
+					$Content  = "欢迎关注程序蒜微信公众号，回复自己的姓名获取矫情的话";
+
+					$template = "<xml>
+								<ToUserName><![CDATA[%s]]></ToUserName>
+								<FromUserName><![CDATA[%s]]></FromUserName>
+								<CreateTime>%s</CreateTime>								<Content><![CDATA[%s]]></Content>
+
+								<MsgType><![CDATA[%s]]></MsgType>
+								</xml>";
+
+					$info = sprintf($template, $toUser, $fromUser, $time, $MsgType, $Content);
+					echo $info;
+
+				}
+			}
+
+
+
+
+			//回复文本消息			
+			// if ( strtolower( $postObj->MsgType) == "text") {
+			// 	// echo 'aaa';
+			// 	switch (trim($postObj->Content)) {
+			// 		case '大蒜':
+			// 			$Content = '么么哒';
+			// 			break;
+
+			// 		case '魏建强':
+			// 			$Content = 'he is a ldiot';
+			// 			break;
+
+			// 		case '程序蒜':
+			// 			$Content = "<a href='http://www.php-garlic.cn'>程序蒜</a>";
+			// 			break;
+			// 		default:
+			// 			$Content = '你是不是傻？';
+			// 			break;
+			// 	}
+
+
+			// 	// if ( trim($postObj->Content) == "大蒜" ) {
+			// 	// 	//回复用户消息
+					
+			// 		$toUser   = $postObj->FromUserName;
+			// 		$fromUser = $postObj->ToUserName;
+			// 		$time     = time();
+			// 		$MsgType  = "text";
+			// 		// $Content  = "么么哒";
+
+			// 		$template = "<xml>
+			// 					<ToUserName><![CDATA[%s]]></ToUserName>
+			// 					<FromUserName><![CDATA[%s]]></FromUserName>
+			// 					<CreateTime>%s</CreateTime>
+			// 					<MsgType><![CDATA[%s]]></MsgType>
+			// 					<Content><![CDATA[%s]]></Content>
+			// 					</xml>";
+
+			// 		$info = sprintf($template, $toUser, $fromUser, $time, $MsgType, $Content);
+			// 		echo $info;
+
+			// 	// }
+			// }
+
+
+			//回复单图文消息
+			if (strtolower($postObj->MsgType) == 'text' and trim($postObj->Content) == '图文') {
+
+				$toUser = $postObj->FromUserName;
+				$FromUser = $postObj->ToUserName;
+				$arr = array(
+
+					array(
+
+						'title'=>'程序蒜',
+						'description'=>'最拉风的程序蒜',
+						'picUrl'=>'http://php-garlic.cn/templates/default/images/suiji.gif',
+						'url'=>'http://php-garlic.cn/show.php?cid=10&id=10',
+
+						),
+
+					array(
+
+						'title'=>'程序蒜',
+						'description'=>'最拉风的程序蒜',
+						'picUrl'=>'http://php-garlic.cn/templates/default/images/suiji.gif',
+						'url'=>'http://php-garlic.cn/show.php?cid=10&id=10',
+						
+						),
+
+					array(
+
+						'title'=>'程序蒜',
+						'description'=>'最拉风的程序蒜',
+						'picUrl'=>'http://php-garlic.cn/templates/default/images/suiji.gif',
+						'url'=>'http://php-garlic.cn/show.php?cid=10&id=10',
+						
+						),
+
+					);
+
+				$template = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<ArticleCount>".count($arr)."</ArticleCount>
+							<Articles>";
+
+				foreach ($arr as $key=> $v) {
+					$template .= "<item>
+								<Title><![CDATA[".$v['title']."]]></Title> 
+								<Description><![CDATA[".$v['description']."]]></Description>
+								<PicUrl><![CDATA[".$v['picUrl']."]]></PicUrl>
+								<Url><![CDATA[".$v['url']."]]></Url>
+								</item>";
+				}
+
+				$template .= "</Articles></xml>";
+
+				echo sprintf($template, $toUser, $FromUser, time(), 'news');
+			
+
+			} /*else {
+				switch (trim($postObj->Content)) {
+					case '大蒜':
+						$Content = '么么哒';
+						break;
+
+					case '魏建强':
+						$Content = 'he is a ldiot';
+						break;
+
+					case '程序蒜':
+						$Content = "<a href='http://www.php-garlic.cn'>程序蒜</a>";
+						break;
+					default:
+						$Content = '你是不是傻？';
+						break;
+				}
+
+				$toUser   = $postObj->FromUserName;
+				$fromUser = $postObj->ToUserName;
+				$time     = time();
+				$MsgType  = "text";
+				// $Content  = "么么哒";
+
+				$template = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							</xml>";
+
+				$info = sprintf($template, $toUser, $fromUser, $time, $MsgType, $Content);
+				echo $info;
+			}*/
+
+
+		}
+
+
+
+
+		//获取微信 access_token
+		public function Wx_Access_Token () 
+		{
+			
+			//1.q请求url地址
+			$appid = 'wxe07339320208362c';
+			$appSecre = '79a4a901a0f2deb9aeece8e11877927d';
+			$url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$appSecre;
+
+			//2.初始化
+			$ch = curl_init();
+			//3.设置参数
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+			//4调用接口
+			$res = curl_exec($ch);
+			//5.关闭curl
+			curl_close($ch);
+			if (curl_errno($ch)) {
+				var_dump(curl_errno($ch));
+			}
+
+			$arr = json_decode($res, true);
+			var_dump($arr);
+
+		}
+
+		//获取微信服务器IP地址
+		public function getWxServerIp()
+		{
+			$access_token = 'suL683hdpJO9TPETE5rxh0IRIGZ7P4oc-88swmXkA7Sfu7jgao8Shn0MCzFX2d54g4FM-dadY4uQHUYYJ5nth93ABdbntS1Tj_hoLuKM6VPZnAMUoZNQUPx6NQyrhgidAGGiAGADJJ';
+
+			$url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token='.$access_token;
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			$res = curl_exec($ch);
+
+			curl_close($ch);
+			if (curl_errno($ch)) {
+				var_dump(curl_error($ch));
+			}
+
+			$arr = json_decode($res, true);
+			echo '<pre>';
+			var_dump($arr);
+
+		} 
+
+	}
