@@ -127,7 +127,11 @@
 	            } else {
 
 
-	                $Content = '城市：'.$res['result']['today']['city'] ."\n日期：".$res['result']['today']['date_y'].'-'.$res['result']['today']['week'] ."\n今日温度：".$res['result']['today']['temperature'] ."\n今日天气：".$res['result']['today']['weather'] ."\n穿衣指数：".$res['result']['today']['dressing_advice'];
+	               $Content = '城市：'.$res['result']['today']['city']."\n";
+	               $Content .= "日期：".$res['result']['today']['date_y'].'-'.$res['result']['today']['week']."\n"; 
+	               $Content .= "今日温度：".$res['result']['today']['temperature']."\n"; 
+	               $Content .= "今日天气：".$res['result']['today']['weather']."\n";
+	               $Content .= "穿衣指数：".$res['result']['today']['dressing_advice']."\n";
 
 	                return $Content;
 	            }

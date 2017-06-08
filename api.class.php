@@ -91,14 +91,16 @@
 
 						} else {
 
+							//查询天气
                             $Content = trim($postObj->Content);
                             $res = $APiModel->weather($Content);
                             if ($res) {
- 									
+
+ 								//查询天气
                                 $APiModel->reponseText($postObj, $res);
                                 
                             } else {
-                                
+                                //如果以上都不存在
                                 $Content = 'sorry,该信息数据库正在创建中.....';
 
                                 $APiModel->reponseText($postObj, $Content);
@@ -226,21 +228,26 @@
 
 			} else {
 				//如果access_token不存在或者已过期，重新获取access_token
-				$appid = 'wxbb072f64ecf059ba';
+				// $appid = 'wxbb072f64ecf059ba';
 
-				$appsecret = 'd4624c36b6795d1d99dcf0547af5443d';
+				// $appsecret = 'd4624c36b6795d1d99dcf0547af5443d';
+
+				$appid = 'wxe07339320208362c';
+
+				$appsecret = '79a4a901a0f2deb9aeece8e11877927d';
 
 				$url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$appsecret;
 
-				$res = $this->http_curl($url, 'gte', 'json');
-				var_dump($res);
+				$res = $this->http_curl($url, 'get', 'json');
+				
 				$access_token = $res['access_token'];
-
+				// var_dump($access_token);exit;
 				//存入session
 				$_SESSION['access_token'] = $access_token;
 
 				$_SESSION['expire_time']  = time() + 7000;
 				// var_dump($_SESSION['access_token']);
+				
 				return $access_token;
 			}
 		}
@@ -256,54 +263,77 @@
 			//调用接口
 			$url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
 			//定义微信菜单
-			$postArr = array(
+			$postArr=array(
+            'button'=>array(
+                array(
+                    'name'=>urlencode('图文'),
+                    'type'=>'click',
+                    'key'=>'item1',
+                ),
+                array(
+                    'name'=>urlencode('音乐'),
+                    'sub_button'=>array(
+                        array(
+                            'name'=>urlencode('歌曲'),
+                            'type'=>'click',
+                            'key'=>'songs'
+                        ),//第一个二级菜单
+                        array(
+                            'name'=>urlencode('百度一下'),
+                            'type'=>'view',
+                            'url'=>'http://www.baidu.com'
+                        ),//第二个二级菜单
+                    )
+                ),
 
-				'button'=>array(
+                array(
+                    'name'=>urlencode('blog'),
+                    'type'=>'view',
+                    'url'=>'http://www.php-garlic.cn',
+                ),//第三个一级菜单
 
-						array(
-							'name'=>urlencode('菜单一'),
-							'type'=>'click',
-							'key'=>'item1',
+        ));
 
-							),
-						array(
-							'name'=>urlencode('菜单二'),
-							'sub_button'=>array(
-
-								array(
-									'name'=>urlencode('歌曲'),
-									'type'=>'click',
-									'key'=>'songs',
-									),
-								array(
-									'name'=>urlencode('电影'),
-									'type'=>'view',
-									'url'=>'http://www.baidu.com',
-									),
-
-								),
-							),
-
-						array(
-
-							'name'=>urlencode('菜单三'),
-							'type'=>'view',
-							'url'=>'http://www.php-garlic.cn',
-
-							),
-					),
-				);
-
-			echo $postJson = urldecode( json_encode( $postArr ) );
-			echo '<hr>';
+			$postJson = urldecode( json_encode( $postArr ) );
+			// echo '<hr>';
 			$res = $this->http_curl($url, 'post', 'json', $postJson);
-			var_dump($res);
+			
 			
 		}
 
-	}
-	
-	$mod = new APi;
 
-	$res = $mod->definedIte();
+
+		//群发接口
+		public function sendMsgAll () 
+		{
+
+			//1.获取全局access_token
+			echo $access_token = $this->Access_ToKen();
+			$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token='.$access_token;
+			//2.组装群发接口数据 array
+			
+
+			$array = array(
+
+				    "touser" => "onVNYxMgqHZpBzYA3lpEugVHpSGA",
+				    "text"=> array("content"=>"this is a test"),            
+					"msgtype"=>"text"
+
+				); 
+			echo '<hr>';
+			//将数组转为json格式
+			$postJson = json_encode($array);
+			var_dump($postJson);
+			echo '<hr>';
+			//调用curl
+			$res = $this->http_curl($url, 'post', 'json', $postJson);
+			var_dump($res);
+
+		}
+
+
+
+
+	}
+
 

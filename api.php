@@ -29,6 +29,8 @@
 		exit;
 	} else {
 		$api->reponseMsg();
+		// $api->definedIte();
+		// $api->sendMsgAll();
 		// var_dump($api);
 	}
 
