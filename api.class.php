@@ -18,6 +18,7 @@
 		//接收事件推送并回复
 		public function reponseMsg() 
 		{	
+			require('./api.Model.class.php');
 			//实例化类
 			$APiModel = new WeChatAPi;
 

@@ -1,7 +1,7 @@
 <?php  
 	
 	require('./api.class.php');
-	require('./api.Model.class.php');
+	//require('./api.Model.class.php');
 	$api = new APi;
 
 	// $dsn = "mysql:host=localhost;dbname=wechat;charset=utf8";
