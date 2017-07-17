@@ -14,7 +14,7 @@
 	// var_dump($res);
 	$timestamp = $_GET['timestamp'];
 	$nonce     = $_GET['nonce'];
-	$token     = 'xdl2017';
+	$token     = 'dasuan';
 	$signature = $_GET['signature'];
 	$echostr   = $_GET['echostr'];
 	$array     = array( $timestamp, $nonce, $token);

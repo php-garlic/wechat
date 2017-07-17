@@ -12,7 +12,6 @@
 			$this->pdo = new PDO($dsn, 'root', 'dasuan9464');
 			$stmtObj = $this->pdo->query($sql);
 			$Content = $stmtObj->fetchAll(2); 
-			
 			return $Content;
 		}
 		

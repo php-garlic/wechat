@@ -1,3 +1,5 @@
 /vendor
 /demo
 /wechat-back
+/.htaccess
+/.user.ini
