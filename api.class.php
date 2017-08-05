@@ -59,45 +59,41 @@
 				if ( strtolower( $postObj->MsgType) == "text") {
                     
                     
+                    $Content = trim($postObj->Content);
+
+					$sql = "SELECT  keywords,reply FROM info WHERE keywords = '".$Content."'";
+
+					$Content = $this->PdoDb($sql);
+
+
+					if (!empty($Content)) {
+						
+						$APiModel->reponseText($postObj, $Content[0]['reply']);
+						
+
+					} else {
+
+						//查询天气
                         $Content = trim($postObj->Content);
+                        $res = $APiModel->weather($Content);
+                        if ($res) {
 
-						$sql = "SELECT  keywords,reply FROM info WHERE keywords = '".$Content."'";
+								//查询天气
+                            $APiModel->reponseText($postObj, $res);
+                            
+                        } else {
+                            //如果以上都不存在
+                            $Content = 'sorry,该信息数据库正在创建中.....';
 
-						$Content = $this->PdoDb($sql);
-
-
-						if (!empty($Content)) {
-							
-							$APiModel->reponseText($postObj, $Content[0]['reply']);
-							
-
-						} else {
-
-							//查询天气
-                            $Content = trim($postObj->Content);
-                            $res = $APiModel->weather($Content);
-                            if ($res) {
-
- 								//查询天气
-                                $APiModel->reponseText($postObj, $res);
-                                
-                            } else {
-                                //如果以上都不存在
-                                $Content = 'sorry,该信息数据库正在创建中.....';
-
-                                $APiModel->reponseText($postObj, $Content);
-                                
-                                exit;
-                                
-                            }
-                                                 
-
-						}
-		
+                            $APiModel->reponseText($postObj, $Content);
+                            
+                            exit;
+                            
+                        }
+                                             
+					}
 				}
 			}
-
-
 
 		}
 
