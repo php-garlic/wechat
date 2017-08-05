@@ -5,18 +5,6 @@
 
 	class WeChatAPi
 	{	
-		// protected $pdo;
-
-		// public function __construct()
-		// {	
-		// 	$dsn = "mysql:host=localhost;dbname=wechat;charset=utf8";
-		// 	$this->pdo = new PDO($dsn, 'root', 'dasuan9464');
-		// 	// $sql = "SELECT  keywords FROM info WHERE keywords = '大蒜'";
-		// 	// $stmtObj = $this->pdo->query($sql);
-		// 	// $Content = $stmtObj->fetch(2); 
-		// 	// echo '<pre>';
-		// 	// var_dump($Content['key']);
-		// }
 		
 		//用户关注事件
 		public function reponseEvent ($postObj) 
@@ -38,8 +26,6 @@
 			$info = sprintf($template, $toUser, $fromUser, $time, $MsgType, $Content);
 			echo $info;
 		}
-
-
 
 		//回复多图文
 		public function reponseMg($postObj, $arr) 
@@ -70,9 +56,6 @@
 			echo sprintf($template, $toUser, $FromUser, time(), 'news');
 
 		}
-
-
-
 
 		//回复单文本
 		public function reponseText($postObj, $Content) 
@@ -126,7 +109,6 @@
 	                
 	            } else {
 
-
 	               $Content = '城市：'.$res['result']['today']['city']."\n";
 	               $Content .= "日期：".$res['result']['today']['date_y'].'-'.$res['result']['today']['week']."\n"; 
 	               $Content .= "今日温度：".$res['result']['today']['temperature']."\n"; 
@@ -138,11 +120,10 @@
 
         	}
 
-           
 		} 
 
 
-	}//class
+	}
 
 
 ?>

@@ -45,24 +45,6 @@
 				}
 			}
 
-
-			// //回复文本消息			
-			// if ( strtolower( $postObj->MsgType) == "text") {
-
-			// 	$str = trim($postObj->Content);
-
-			// 	$sql = "SELECT  keywords FROM info WHERE keywords = '".$str."'";
-
-			// 	$stmtObj = $this->pdo->query($sql);
-			// 	$str = $stmtObj->fetch(2); 
-
-			// 	$APiModel = new WeChatAPi;
-
-			// 	$APiModel->reponseText($postObj, $str['keywords']);
-
-			// } 
-
-
 			//回复单文本及单图文消息
 			if (strtolower($postObj->MsgType) == 'text' and trim($postObj->Content) == '图文') {
 
@@ -111,8 +93,7 @@
                                                  
 
 						}
-			
-
+		
 				}
 			}
 
@@ -183,8 +164,6 @@
 		 */
 		public function http_curl($url, $type='get', $res = 'json', $arr = '')
 		{	
-
-			//1.获取xdl2017
 			
 			//1.初始化curl
 			$ch = curl_init();
@@ -228,9 +207,6 @@
 
 			} else {
 				//如果access_token不存在或者已过期，重新获取access_token
-				// $appid = 'wxbb072f64ecf059ba';
-
-				// $appsecret = 'd4624c36b6795d1d99dcf0547af5443d';
 
 				$appid = 'wxe07339320208362c';
 
@@ -301,8 +277,6 @@
 			
 		}
 
-
-
 		//群发接口
 		public function sendMsgAll () 
 		{
@@ -330,9 +304,6 @@
 			var_dump($res);
 
 		}
-
-
-
 
 	}
 

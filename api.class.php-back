@@ -12,22 +12,8 @@
 			// $postArr = $GLOBAlS['HTTP_RAW_POST_DATA'];
 			//获取到微信推送过来的post数据(xml)
 			$postArr = file_get_contents('php://input');
-			
-			//处理消息类型
-			/*<xml>
-			<ToUserName><![CDATA[toUser]]></ToUserName>
-			<FromUserName><![CDATA[FromUser]]></FromUserName>
-			<CreateTime>123456789</CreateTime>
-			<MsgType><![CDATA[event]]></MsgType>
-			<Event><![CDATA[subscribe]]></Event>
-			</xml>*/
 
 			$postObj = simplexml_load_string($postArr);
-			// $postObj->ToUserName = '';
-			// $postObj->FromUserName = '';
-			// $postObj->CreateTime = '';
-			// $postObj->MsgType = 'event';
-			// $postObj->Event = '';
 
 			//判断该数据包是否是订阅的事件推送
 			//转为小写
@@ -56,53 +42,6 @@
 
 				}
 			}
-
-
-
-
-			//回复文本消息			
-			// if ( strtolower( $postObj->MsgType) == "text") {
-			// 	// echo 'aaa';
-			// 	switch (trim($postObj->Content)) {
-			// 		case '大蒜':
-			// 			$Content = '么么哒';
-			// 			break;
-
-			// 		case '魏建强':
-			// 			$Content = 'he is a ldiot';
-			// 			break;
-
-			// 		case '程序蒜':
-			// 			$Content = "<a href='http://www.php-garlic.cn'>程序蒜</a>";
-			// 			break;
-			// 		default:
-			// 			$Content = '你是不是傻？';
-			// 			break;
-			// 	}
-
-
-			// 	// if ( trim($postObj->Content) == "大蒜" ) {
-			// 	// 	//回复用户消息
-					
-			// 		$toUser   = $postObj->FromUserName;
-			// 		$fromUser = $postObj->ToUserName;
-			// 		$time     = time();
-			// 		$MsgType  = "text";
-			// 		// $Content  = "么么哒";
-
-			// 		$template = "<xml>
-			// 					<ToUserName><![CDATA[%s]]></ToUserName>
-			// 					<FromUserName><![CDATA[%s]]></FromUserName>
-			// 					<CreateTime>%s</CreateTime>
-			// 					<MsgType><![CDATA[%s]]></MsgType>
-			// 					<Content><![CDATA[%s]]></Content>
-			// 					</xml>";
-
-			// 		$info = sprintf($template, $toUser, $fromUser, $time, $MsgType, $Content);
-			// 		echo $info;
-
-			// 	// }
-			// }
 
 
 			//回复单图文消息
@@ -162,47 +101,9 @@
 
 				echo sprintf($template, $toUser, $FromUser, time(), 'news');
 			
-
-			} /*else {
-				switch (trim($postObj->Content)) {
-					case '大蒜':
-						$Content = '么么哒';
-						break;
-
-					case '魏建强':
-						$Content = 'he is a ldiot';
-						break;
-
-					case '程序蒜':
-						$Content = "<a href='http://www.php-garlic.cn'>程序蒜</a>";
-						break;
-					default:
-						$Content = '你是不是傻？';
-						break;
-				}
-
-				$toUser   = $postObj->FromUserName;
-				$fromUser = $postObj->ToUserName;
-				$time     = time();
-				$MsgType  = "text";
-				// $Content  = "么么哒";
-
-				$template = "<xml>
-							<ToUserName><![CDATA[%s]]></ToUserName>
-							<FromUserName><![CDATA[%s]]></FromUserName>
-							<CreateTime>%s</CreateTime>
-							<MsgType><![CDATA[%s]]></MsgType>
-							<Content><![CDATA[%s]]></Content>
-							</xml>";
-
-				$info = sprintf($template, $toUser, $fromUser, $time, $MsgType, $Content);
-				echo $info;
-			}*/
-
+			}
 
 		}
-
-
 
 
 		//获取微信 access_token
